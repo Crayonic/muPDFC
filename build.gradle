@@ -47,6 +47,12 @@ android {
             manifest.srcFile 'src/main/AndroidManifest.xml'
         }
     }
+	
+	
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 task showClasspath << {
@@ -54,23 +60,23 @@ task showClasspath << {
 }
 task buildNative(type: Exec, description: 'Compile JNI source via NDK') {
 //        def ndkDir = android.plugin.ndkFolder
-    //def ndkDir = plugins.getPlugin('com.android.library').sdkHandler.ndkFolder
-    def rootDir = project.rootDir
-    def localProperties = new File(rootDir, "local.properties")
-    Properties properties = new Properties()
-    localProperties.withInputStream { instr ->
-        properties.load(instr)
-    }
-    def ndkDir = properties.getProperty('ndk.dir')
+    def ndkDir = plugins.getPlugin('com.android.library').sdkHandler.ndkFolder
+    //def rootDir = project.rootDir
+    //def localProperties = new File(rootDir, "local.properties")
+    //Properties properties = new Properties()
+    //localProperties.withInputStream { instr ->
+    //    properties.load(instr)
+   // }
+   // def ndkDir = properties.getProperty('ndk.dir')
     //println ndkDir
 //        if (System.properties[Locale.ROOT].toLowerCase().contains('windows')){
     if (System.properties['os.name'].toLowerCase().contains('windows')) {
-        commandLine 'cmd', "$ndkDir/ndk-build.cmd",
+        commandLine  "$ndkDir/ndk-build.cmd",
                 '-C', file('src/main/jni').absolutePath,
                 '-j', Runtime.runtime.availableProcessors(),
                 'all', 'NDK_DEBUG=1'
     } else {
-        commandLine 'cmd', "$ndkDir/ndk-build",
+        commandLine  "$ndkDir/ndk-build",
                 '-C', file('src/main/jni').absolutePath,
                 '-j', Runtime.runtime.availableProcessors(),
                 'all', 'NDK_DEBUG=1'
